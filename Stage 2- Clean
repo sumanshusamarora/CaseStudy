@@ -1,3 +1,21 @@
+Cleaning steps taken are -
+1) Removed duplicates
+2) Updated flag "is_newsletter_subscriber" to be numeric so it can be used for segmentation and modeling
+3) "days_since_last_order" column seemed to be currupted as it showed hourly values so corrected it to show days
+4) One of the columns had missing values and some outliers has huge values so updated missing values by median
+5) Since the most relevant feature that could help infer the Gender of customer is Male and Female items purchased so created a new feature to show percentage of female items out of total male and female items
+6) Did some integity checks like Items-Orders comparison etc. to make sure data does not have anomalies
+7) From reading the documentation about variables it seemed like Orders counts for full order cancels and not partial orders so ran checks and found that 1908 customers have cancels+returns > orders which should not be the case
+8) But logically it should account for partial order cancels as well but still found 3 cases where cancels + returns where more than items
+9) Female and Male items volume does not match with all male and female apperals + footwear + accessories for many customers
+
+While i did not correct the issues in last 3 points many columns like items, cancels, returns, revenue, discounts would be linked and because i do not have full visibility on how they are calculated so i left them as is for now. But in real world if i was building model for the business use, i would find the answers to my questions and accordingly fix these data issues.
+
+Below is the code for this section only. The full code is provided in code template.
+
+
+---------------------- Code ---------------------------
+
 data = pd.read_json(r'C:\Users\suman\Downloads\test_data\data.json')
 #Adding variables names
 data["customer_id"].count()
@@ -10,7 +28,7 @@ data_desc = data.describe()
 data.dtypes
 #Streamlining column order
 data = data[['customer_id', 'days_since_first_order', 'days_since_last_order', 'is_newsletter_subscriber', 'orders', 'items', 'cancels', 'returns', 'female_items', 'wapp_items', 'wftw_items', 'wacc_items',  'wspt_items', 'male_items', 'mapp_items', 'macc_items', 'mftw_items', 'mspt_items', 'unisex_items', 'curvy_items', 'sacc_items', 'vouchers', 'cc_payments', 'paypal_payments', 'afterpay_payments', 'apple_payments', 'different_addresses', 'shipping_addresses', 'devices', 'msite_orders', 'desktop_orders', 'android_orders', 'ios_orders', 'other_device_orders', 'work_orders', 'home_orders', 'parcelpoint_orders', 'other_collection_orders', 'redpen_discount_used', 'coupon_discount_applied', 'average_discount_onoffer', 'average_discount_used', 'revenue']]
-#Updaing newsletter_subscriber clumn flag as 1 and 0
+#Updaing newsletter_subscriber flag as 1 and 0
 from sklearn.preprocessing import LabelEncoder
 le = LabelEncoder()
 data["is_newsletter_subscriber"] = le.fit_transform(data["is_newsletter_subscriber"])
