@@ -1,19 +1,19 @@
 This is a very interesting problem as we do not actually have the taget variable in the data which makes it different from all the other problems in supervised machine learning world. To cater this issue, a segmentation model is created primarilty keeping male female items ratio variable in mind to infer a gender of the customers. Below approach was followed - 
 
-1) Identified features which were had more than 20% co-relation with the MaleFemaleItemsRation feature
+1) Identified features which had more than 20% co-relation with the MaleFemaleItemsRation feature
 2) K-Means clustring was implemented with different values of K
 3) Inertia was plotted for all the values K = 1 to 10
-4) Using elbow method we found the best value of k (which came out to be 2)
+4) Using elbow method, found the best value of k (which came out to be 2)
 5) 2 segments were created with one labeled as Male and other as Female
 6) Some integrity checks were performed to see if they looked well
 
 Now that we have labelled data, an ANN was introduced to predict the Gender which achieved more than 95% accuracy on validation data. Below process was followed to build the ANN.
 1) Added Gender feature to the main dataset and removed all engineered variables from it
-2) Performed feature selection techniques to find best features without loosing the qulaity of prediction. A pre existing module feature-selector was used to achieve this
+2) Performed feature selection techniques to find best features without loosing the qulaity of prediction (dimensionality reduction). A pre existing package feature-selector was used to achieve this
 3) Standardized all features
 4) Implemented ANN with one hidden layer
 
-95% accounracy was achieved by ANN and i also understand that Gender feature was inferred basis the male and female items ordered along with 4 similar features and these will serve as an input the to ANN so accuracy should obviouly be high but we need to get the labelled data in order to create a supervised model. Rather than creating a rule based gender, i thought having a segmentation mwould be better as it can accoutn for some features.
+Over 95% accounracy was achieved by ANN and i also understand that Gender feature was inferred basis the male and female items ordered along with 4 similar features and these similar features also serve as an input the to ANN so accuracy should obviouly be high. But we do need to get the labelled data in order to create a supervised model. Rather than creating a rule based gender, i thought having a segmentation would be better as it statistically divides the customers in two relevant groups basis their shopping behaviour.
 
 If we had some extra features like customer name, age, email or non-aggrgated shopping trend then it would have been easier to infer the Gender.
 
