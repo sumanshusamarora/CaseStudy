@@ -9,4 +9,4 @@ What percentage of customers who have purchased female items have paid by credit
 What was the average revenue for customers who used either iOS, Android or Desktop?
 We want to run an email campaign promoting a new mens luxury brand. Can you provide a list of customers we should send to?
 
-Answers can be found under code "SQL Queries"
+Answers can be found under code "SQL Queries in Python"
