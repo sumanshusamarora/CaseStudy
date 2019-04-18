@@ -1,0 +1,23 @@
+import sqlite3 as sql
+import pandas as pd
+import numpy as np
+#Initializing SQLITE connection
+conn = sql.connect(r'C:\Users\suman\Downloads\test_data.db\test_data.db')
+#Task Stage 1 - Answer 1
+c1 = conn.cursor()
+c1.execute("Select ROUND(SUM(revenue)) from customers where cc_payments = 1;")
+c1.fetchall()
+#Task Stage 1 - Answer 2
+c2 = conn.cursor()
+c2.execute("""SELECT Round(((1.0*count(distinct case when cc_payments = 1 then customer_id end))/
+                      (1.0*COUNT(customer_id)))*100,2) as TOTAL_FEM_ITEMS from customers where female_items > 0;""")
+c2.fetchall()
+#Task Stage 1 - Answer 3
+c3 = conn.cursor()
+c3.execute("""SELECT ROUND(AVG(Revenue)) FROM customers where desktop_orders > 0 or android_orders > 0 or ios_orders > 0;""")
+c3.fetchall()
+#Task Stage 1 - Answer 4
+#While there could be many checks that we could put to target customer for a luxury brand but below is most simplest targeting criteria with an assumption that customer has a spending limit more than 500 in last 360 days
+c4 = conn.cursor()
+c4.execute("""SELECT Customer_id from customers where orders > (cancels+returns) and male_items > 0 and revenue/orders > 500;""")
+c4.fetchall()
