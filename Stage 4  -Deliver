@@ -2,6 +2,7 @@ Q. How did you clean the data and what was wrong with it? Close to 90% of a Data
 A. Answered in Stage 2
 
 Q. What are the features you used as-is and which one did you engineer using the given ones? What do they mean in the real world?
+A. I engineered features like average revenue, male female items ratio to support the segmentation. Approx 15 low importance features were removed from the ANN to make it easier and simpler to build model. I could also remove correlated independent features but our model returned good accuracy so i didn't do in this assignment work. 
 
 Q. What does the output look like - how close is the accuracy of the prediction in light of data with labelled flags?
 A. Over 95%
