@@ -1,0 +1,95 @@
+This is a very interesting problem as we do not actually have the taget variable in the data which makes it different from all the other problems in supervised machine learning world. To cater this issue, a segmentation model is created primarilty keeping male female items ratio variable in mind to infer a gender of the customers. Below approach was followed - 
+
+1) Identified features which were had more than 20% co-relation with the MaleFemaleItemsRation feature
+2) K-Means clustring was implemented with different values of K
+3) Inertia was plotted for all the values K = 1 to 10
+4) Using elbow method we found the best value of k (which came out to be 2)
+5) 2 segments were created with one labeled as Male and other as Female
+6) Some integrity checks were performed to see if they looked well
+
+Now that we have labelled data, an ANN was introduced to predict the Gender which achieved more than 95% accuracy on validation data. Below process was followed to build the ANN.
+1) Added Gender feature to the main dataset and removed all engineered variables from it
+2) Performed feature selection techniques to find best features without loosing the qulaity of prediction. A pre existing module feature-selector was used to achieve this
+3) Standardized all features
+4) Implemented ANN with one hidden layer
+
+95% accounracy was achieved by ANN and i also understand that Gender feature was inferred basis the male and female items ordered along with 4 similar features and these will serve as an input the to ANN so accuracy should obviouly be high but we need to get the labelled data in order to create a supervised model. Rather than creating a rule based gender, i thought having a segmentation mwould be better as it can accoutn for some features.
+
+If we had some extra features like customer name, age, email or non-aggrgated shopping trend then it would have been easier to infer the Gender.
+
+Code for this section is below, but the full code can be taken from the code file in the project.
+
+
+------------------------Code----------------------
+#Building ANN now
+data_ANN = data.copy()
+data_ANN["Is_Male"] = y_pred_kmeans
+data_ANN.drop(columns="customer_id", inplace=True)
+X=data_ANN.iloc[:,:42]
+y=data_ANN.iloc[:,42]
+#Step 1 - Feature selection
+from feature_selector import FeatureSelector
+fts=FeatureSelector(X,y)
+fts.identify_missing(missing_threshold=0.9)
+
+fts.identify_collinear(correlation_threshold=0.7)
+fts.plot_collinear()
+collinear_features = fts.ops['collinear']
+
+fts.identify_zero_importance(task='classification', eval_metric='auc', n_iterations=30, early_stopping=True)
+zero_importance_features = fts.ops['zero_importance']
+
+fts.plot_feature_importances(threshold=0.99, plot_n=12)
+Most_important_Features = list(fts.feature_importances["feature"].head(28))
+
+Data_ANN_2 = data_ANN[Most_important_Features]
+X=Data_ANN_2.iloc[:,:]
+y=data_ANN.iloc[:,42]
+
+# Splitting the dataset into the Training set and Test set
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+
+# Feature Scaling
+from sklearn.preprocessing import StandardScaler
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# Part 2 - Now let's make the ANN!
+
+# Importing the Keras libraries and packages
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import Dropout
+
+# Initialising the ANN
+classifier = Sequential()
+
+# Adding the input layer and the first hidden layer
+classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 28))
+classifier.add(Dropout(0.2))
+# Adding the second hidden layer
+classifier.add(Dense(units = 15, kernel_initializer = 'uniform', activation = 'relu'))
+# Adding the output layer
+classifier.add(Dense(units = 1, kernel_initializer = 'uniform', activation = 'sigmoid'))
+
+# Compiling the ANN
+classifier.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+
+# Fitting the ANN to the Training set
+classifier.fit(X_train, y_train, batch_size = 500, epochs = 100)
+
+# Part 3 - Making predictions and evaluating the model
+
+# Predicting the Test set results
+y_pred = classifier.predict(X_test)
+y_pred = (y_pred > 0.5)
+
+# Making the Confusion Matrix
+from sklearn.metrics import confusion_matrix
+cm = confusion_matrix(y_test, y_pred)
+
+from sklearn.metrics import accuracy_score, f1_score
+accuracy_score(y_test, y_pred)
+f1_score(y_test, y_pred)
