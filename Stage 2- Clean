@@ -1,0 +1,59 @@
+data = pd.read_json(r'C:\Users\suman\Downloads\test_data\data.json')
+#Adding variables names
+data["customer_id"].count()
+# Step 1 - Removing duplicates
+data.drop_duplicates(inplace=True)
+data.reset_index(drop=True, inplace=True)
+data["customer_id"].count()
+
+data_desc = data.describe()
+data.dtypes
+#Streamlining column order
+data = data[['customer_id', 'days_since_first_order', 'days_since_last_order', 'is_newsletter_subscriber', 'orders', 'items', 'cancels', 'returns', 'female_items', 'wapp_items', 'wftw_items', 'wacc_items',  'wspt_items', 'male_items', 'mapp_items', 'macc_items', 'mftw_items', 'mspt_items', 'unisex_items', 'curvy_items', 'sacc_items', 'vouchers', 'cc_payments', 'paypal_payments', 'afterpay_payments', 'apple_payments', 'different_addresses', 'shipping_addresses', 'devices', 'msite_orders', 'desktop_orders', 'android_orders', 'ios_orders', 'other_device_orders', 'work_orders', 'home_orders', 'parcelpoint_orders', 'other_collection_orders', 'redpen_discount_used', 'coupon_discount_applied', 'average_discount_onoffer', 'average_discount_used', 'revenue']]
+#Updaing newsletter_subscriber clumn flag as 1 and 0
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+data["is_newsletter_subscriber"] = le.fit_transform(data["is_newsletter_subscriber"])
+
+#It seems like days since last order is actaully hours since last order to dividing by 24 to bring it at day level
+data["days_since_last_order"] = data["days_since_last_order"]/24
+
+
+#Only coupon_discount_applied column has some msising values and since there are some outliers in this column so imputing them by median value
+data=data.fillna(data.median())
+
+#Finding onservations where total items not equal to female + male + unisex
+issue = 0
+for x in range(len(data)):
+    if data["items"][x] != data["female_items"][x] + data["male_items"][x] + data["unisex_items"][x]:
+        issue+=1
+print(str(issue) + " number of rows have mismatch in item count")
+
+#Finding onservations where total orders are not equal to sum by shipping types
+issue = 0
+for x in range(len(data)):
+    if data["orders"][x] != data["work_orders"][x] + data["home_orders"][x] + data["parcelpoint_orders"][x] + data["other_collection_orders"][x]:
+        issue+=1
+print(str(issue) + " number of rows does not sum up w.r.t home + office + other shipping types")
+
+#Finding onservations where total orders are not equal to total device orders
+issue = 0
+lst_customer = []
+for x in range(len(data)):
+    if data["orders"][x] != data["msite_orders"][x] + data["desktop_orders"][x] + data["android_orders"][x] + data["ios_orders"][x] + data["other_device_orders"][x]:
+        issue+=1
+        lst_customer.append(data["customer_id"][x])
+print(str(issue) + " number of orders does not sum up w.r.t mobile site + web + mobile application")
+
+#Going by definition, it looks like the returns and cancellation are full order returned and cancelled, not just items so they should not be more than number of orders placed
+data[data["orders"]<(data["cancels"] + data["returns"])] #1908 rows
+data[data["items"]<(data["cancels"] + data["returns"])] #3 rows
+
+
+#Check if items less than orders
+data[data["orders"] > data ["items"]]
+
+#Check if female itms total matches with total female item types
+data[data["female_items"] > data["wapp_items"] + data["wftw_items"] + data["wacc_items"] + data["wspt_items"]] #2859
+data[data["male_items"] > data["mapp_items"] + data["macc_items"] + data["mftw_items"] + data["mspt_items"]] #5480
+
