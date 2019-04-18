@@ -1,0 +1,13 @@
+Q. How did you clean the data and what was wrong with it? Close to 90% of a Data Scientist's job is in cleaning data?
+A. Answered in Stage 2
+
+Q. What are the features you used as-is and which one did you engineer using the given ones? What do they mean in the real world?
+
+Q. What does the output look like - how close is the accuracy of the prediction in light of data with labelled flags?
+A. Over 95%
+
+Q. What other features and variables can you think of, that can make this process more robust? Can you make a recommendation of top 5 features you'd seek to find apart from the ones given here
+A. Name, Email, Age to be able to understand life stage, Non Aggregated data to understand shopping trend and type of items bought each time, website browising history
+
+Q. Summarize your findings in an executive summary
+A. I have already provided commentary, findings and process in respective section wise modules
