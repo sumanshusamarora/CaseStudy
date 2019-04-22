@@ -9,7 +9,7 @@ This is a very interesting problem as we do not actually have the taget variable
 
 Now that we have labelled data, an ANN was introduced to predict the Gender which achieved more than 95% accuracy on validation data. Below process was followed to build the ANN.
 1) Added Gender feature to the main dataset and removed all engineered variables from it
-2) Performed feature selection techniques to find best features without loosing the qulaity of prediction (dimensionality reduction). A pre existing package feature-selector was used to achieve this
+2) Performed feature selection techniques to find best features without loosing the qulaity of prediction (feature reduction). A pre existing package feature-selector was used to achieve this
 3) Standardized all features
 4) Implemented ANN with one hidden layer
 
