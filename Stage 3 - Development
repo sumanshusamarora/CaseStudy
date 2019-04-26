@@ -67,7 +67,7 @@ from keras.layers import Dropout
 classifier = Sequential()
 
 # Adding the input layer and the first hidden layer
-classifier.add(Dense(units = 28, kernel_initializer = 'uniform', activation = 'relu', input_dim = 28))
+classifier.add(Dense(units = 15, kernel_initializer = 'uniform', activation = 'relu', input_dim = 28))
 classifier.add(Dropout(0.2))
 # Adding the second hidden layer
 classifier.add(Dense(units = 15, kernel_initializer = 'uniform', activation = 'relu'))
